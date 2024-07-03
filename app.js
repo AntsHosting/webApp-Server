@@ -10,11 +10,20 @@ async function uploadImage() {
     const formData = new FormData();
     formData.append('file', file);
 
-    const response = await fetch('http://192.168.1.49:5000/upload', {
-        method: 'POST',
-        body: formData
-    });
+    try {
+        const response = await fetch('http://192.168.1.49:5000/upload', {
+            method: 'POST',
+            body: formData
+        });
 
-    const result = await response.json();
-    document.getElementById('uploadResult').innerText = result.message;
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+
+        const result = await response.json();
+        document.getElementById('uploadResult').innerText = result.message;
+    } catch (error) {
+        console.error('Error:', error);
+        document.getElementById('uploadResult').innerText = 'Error uploading file';
+    }
 }
